@@ -28,13 +28,14 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
 
             // ajout classe/description produit
             paragrapheArticle.className = "descriptionProduit";         // définit le nom de classe de 'paragrapheArticle'
-            paragrapheArticle.innerHTML = data [i].description;         // 'data [i].description' = description de l'élément data d'index 'i'
+            paragrapheArticle.innerHTML = data[i].description;          // 'data [i].description' = description de l'élément data d'index 'i'
 
             // ajout des liens
-            lien.href = './product.html?id=${data[i]._id}';             // définit l'attribut 'href' du lien 
+            lien.href = `./product.html?id=${data[i]._id}`;             // '${data[i]._id}' = '_id' de l'élement data d'index 'i'
             imageArticle.src = data[i].imageUrl;                        // définit l'attribut 'src' de l'image
             imageArticle.alt = data[i].altText;                         // définit l'attribut 'alt' de l'image
 
-            document.querySelector("#items").appendChild(lien);          // 'lien' enfant de la class 'items' déja existante dans le code html
+            document.querySelector("#items").appendChild(lien);         // 'lien' enfant de la class 'items' déja existante dans le code html
+
         }
     })
