@@ -30,7 +30,7 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
             paragrapheArticle.className = "descriptionProduit";         // définit le nom de classe de 'paragrapheArticle'
             paragrapheArticle.innerHTML = data[i].description;          // 'data [i].description' = description de l'élément data d'index 'i'
 
-            // ajout des liens
+            // ajout des attributs
             lien.href = `./product.html?id=${data[i]._id}`;             // '${data[i]._id}' = '_id' de l'élement data d'index 'i'
             imageArticle.src = data[i].imageUrl;                        // définit l'attribut 'src' de l'image
             imageArticle.alt = data[i].altText;                         // définit l'attribut 'alt' de l'image
