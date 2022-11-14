@@ -1,3 +1,5 @@
+//////////////////////// Récupération de l'id ////////////////////////////////
+
 let url = window.location.href;                                     // récupère l'URL de la page
 let objetUrl = new URL(url);                                        // crée un objet URL 'objetUrl'
 let parametreDeRecherche = new URLSearchParams(objetUrl.search);    // crée un objet URLSearchParams 'parametreDeRecherche'
@@ -5,6 +7,8 @@ if(parametreDeRecherche.has('id')) {                                // recherche
   var idProduit = parametreDeRecherche.get('id');                   // définit la variable 'idProduit'     
   console.log('id = ' + idProduit)                                  // affiche dans la console 'id =' + valeur 'id'
 }
+
+//////////////////////// Manipulation du DOM ////////////////////////////////
 
 fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers API, requete GET via fetch
     .then(function(result) {
@@ -17,7 +21,6 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
 
         // création des éléments 
         const image = document.createElement('img');                // création d'une image
-        const option = document.createElement('option');            // crétion des options
         
         // ajout des attributs
         image.src = data.imageUrl;   // définit l'attribut 'src' de l'image  
@@ -25,7 +28,7 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
 
         // modifications innerHTML
         const paragrapheTitre = document.getElementById('title');               // définit 'paragrapheTitre' comme l'élement de classe 'title'
-        title.innerHTML = data.name;                                            // remplace le contenue de l'innerHTML de 'paragrapheTitre'
+        paragrapheTitre.innerHTML = data.name;                                  // remplace le contenue de l'innerHTML de 'paragrapheTitre'
         const paragraphePrix = document.getElementById('price');                // définit 'paragraphePrix' comme l'élement de classe 'price'
         paragraphePrix.innerHTML = data.price;                                  // remplace le contenue de l'innerHTML de 'paragraphePrix'
         const paragrapheDescription = document.getElementById('description');   // définit 'paragrapheDescription' comme l'élement de classe 'description'
@@ -42,7 +45,7 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
         document.querySelector('.item__img').appendChild(image);                // 'image' enfant de '.item__img'  
     })
 
-    //////////////////////// Gestion du panier ////////////////////////////////
+//////////////////////////// Gestion du panier ////////////////////////////////
     
     // sauvegarde du panier
     function sauvegarderPanier(panier) {
@@ -86,7 +89,7 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
 
     // création de la classe produit et définition de ses propriétés
     class Produit {
-        constructor(idProduit, couleurProduit, nombreDeProduit) { // 
+        constructor(idProduit, couleurProduit, nombreDeProduit) { 
             this.id = idProduit;            // définit  'id' produit pour chaque instance de 'Produit'
             this.couleur = couleurProduit;  // définit  'couleurProduit' produit pour chaque instance de 'Produit'
             this.quantity = nombreDeProduit;// définit  'nombreDeProduit' produit pour chaque instance de 'Produit'

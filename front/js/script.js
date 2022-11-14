@@ -1,3 +1,5 @@
+//////////////////////// Manipulation du DOM ////////////////////////////////
+
 fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET via fetch
     .then(function(result) {
         if (result.ok) {                        // si result ok
@@ -23,11 +25,11 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
             article.appendChild(paragrapheArticle);                     // 'paragrapheArticle' enfant de 'article'
 
             // ajout classe/nom produit
-            titreArticle.className = "nomProduit";                      // définit le nom de classe de 'titreArticle'
+            titreArticle.className = "nomProduit";                      // définit la classe de 'titreArticle'
             titreArticle.innerHTML = data[i].name;                      // 'data[i].name' = nom de l'élément data d'index 'i'
 
             // ajout classe/description produit
-            paragrapheArticle.className = "descriptionProduit";         // définit le nom de classe de 'paragrapheArticle'
+            paragrapheArticle.className = "descriptionProduit";         // définit la classe de 'paragrapheArticle'
             paragrapheArticle.innerHTML = data[i].description;          // 'data [i].description' = description de l'élément data d'index 'i'
 
             // ajout des attributs
