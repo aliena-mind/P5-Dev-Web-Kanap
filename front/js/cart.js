@@ -105,7 +105,7 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
                     image.alt = data[j].imageUrl;                                // 'alt' de l'image
 
                     // calcul du prix total
-                    prixTotal += data[j].price;         
+                    prixTotal += data[j].price * panier[i].quantity;         
                     document.querySelector("#totalPrice").innerHTML = prixTotal;
 
                     // ajout inner HTML
