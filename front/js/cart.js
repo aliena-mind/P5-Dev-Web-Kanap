@@ -19,12 +19,15 @@ function recupererPanier() {
 
 //////////////////////// Manipulation du DOM ////////////////////////////////
 
+
 fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET via fetch
     .then(function(result) {
         if (result.ok) {                        // si result ok
         return result.json();                   // envoie la réponse au format JSON
         }
     })
+
+    // affiche les éléments du panier
     .then(function(data) {
         let panier = recupererPanier();
 
@@ -79,41 +82,42 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
                     divSupprimer.appendChild(supprimer);         // 'supprimer' enfant de 'divSupprimer'
 
                     // ajout de la classe des éléments
-                    article.className = "cart__item";                           // définit 'article'
-                    divImage.className = "cart__item__img";                     // définit 'divImage'
+                    article.className = "cart__item";                               // définit 'article'
+                    divImage.className = "cart__item__img";                         // définit 'divImage'
 
-                    divDescription.className = "cart__item__content";           // définit 'divDescription'
-                    description.className = "cart__item__content__description"; // définit  'description'
+                    divDescription.className = "cart__item__content";               // définit 'divDescription'
+                    description.className = "cart__item__content__description";     // définit  'description'
                                     
-                    parametres.className = "cart__item__content__settings";     // définit  'parametres'
+                    parametres.className = "cart__item__content__settings";         // définit  'parametres'
                     divQuantite.className = "cart__item__content__settings__quantity"; // définit  'divQuantite'
-                    inputQuantite.className = "itemQuantity";                   // définit 'inputQuantite'
+                    inputQuantite.className = "itemQuantity";                       // définit 'inputQuantite'
 
                     divSupprimer.className = "cart__item__content__settings__delete"; // définit  'divSupprimer'
-                    supprimer.className = "deleteItem";                         // définit 'Supprimer'
+                    supprimer.className = "deleteItem";                             // définit 'Supprimer'
 
                     // ajout des attributs
-                    article.setAttribute('dataId', panier[i].id);                // 'dataId'
-                    article.setAttribute('dataCouleur', panier[i].couleur);      // 'dataCouleur' 
-                    inputQuantite.setAttribute('type', 'number');                // 'type'
-                    inputQuantite.setAttribute('name', 'itemQuantity');          // 'name'
-                    inputQuantite.setAttribute('min', '1');                      // 'min'
-                    inputQuantite.setAttribute('max', '100');                    // 'max'
-                    inputQuantite.setAttribute('value', '');                     // 'value'
-                    supprimer.setAttribute('dataId', panier[i].id);              // 'dataId'
-                    image.src = data[j].imageUrl;                                // 'src' de l'image
-                    image.alt = data[j].imageUrl;                                // 'alt' de l'image
+                    article.setAttribute('data-id', panier[i].id);                  // 'data-id'
+                    article.setAttribute('data-couleur', panier[i].couleur);        // 'data-couleur' 
+
+                    inputQuantite.setAttribute('type', 'number');                   // 'type'
+                    inputQuantite.setAttribute('name', 'itemQuantity');             // 'name'
+                    inputQuantite.setAttribute('min', '1');                         // 'min'
+                    inputQuantite.setAttribute('max', '100');                       // 'max'
+                    inputQuantite.setAttribute('aria-label', 'quantité');           // 'aria-label'
+                    inputQuantite.setAttribute('value',panier[i].quantity);         // 'value'
+
+                    image.src = data[j].imageUrl;                                   // 'src' de l'image
+                    image.alt = data[j].imageUrl;                                   // 'alt' de l'image
 
                     // calcul du prix total
                     prixTotal += data[j].price * panier[i].quantity;         
                     document.querySelector("#totalPrice").innerHTML = prixTotal;
 
                     // ajout inner HTML
-                    couleur.innerHTML = article.getAttribute('dataCouleur');    // affiche la couleur
-                    nom.innerHTML = data[j].name;                               // affiche le nom
-                    prix.innerHTML = data[j].price + ' €';                      // affiche le prix
-                    quantite.innerHTML = panier[i].quantity;                    // affiche la quantité
-                    supprimer.innerHTML = 'Supprimer';                          // bouton supprimer
+                    couleur.innerHTML = article.getAttribute('data-couleur');       // affiche la couleur
+                    nom.innerHTML = data[j].name;                                   // affiche le nom
+                    prix.innerHTML = data[j].price + ' €';                          // affiche le prix
+                    supprimer.innerHTML = 'Supprimer';                              // bouton supprimer
 
                     // 'article' enfant de la class 'cart__items' déja existante dans le code html
                     document.querySelector("#cart__items").appendChild(article);
@@ -121,4 +125,26 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
             }
         }
     })
+    
+    // supprimer un produit
+    .then(function(){   
 
+        let panier = recupererPanier();                                             
+        let boutonsSupprimer = Array.from(document.querySelectorAll('.deleteItem'));
+        
+        for (i=0; i<boutonsSupprimer.length; i++) {
+    
+            let article = document.querySelectorAll(".cart__item");
+
+            let articleId = article[i].getAttribute("data-id");
+            let articleCouleur = article[i].getAttribute("data-couleur");
+    
+            boutonsSupprimer[i].addEventListener("click", (event) => {
+
+                panier = panier.filter(p => (p.couleur !== articleCouleur) && (p => p.id !== articleId));
+
+                sauvegarderPanier(panier);
+                window.location.reload();
+            })
+        }
+    })

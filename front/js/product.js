@@ -114,6 +114,7 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
         else {  // sinon crée un nouvel objet 'produit' et l'ajoute au panier
             let produit = new Produit(idProduit, couleurProduit, nombreDeProduit);
             ajouterAuPanier(produit);
+            alert('Le produit à été ajouté au panier');
         }
     }
     
