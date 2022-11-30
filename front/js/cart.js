@@ -30,97 +30,114 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
     .then(function(data) {
 
         let panier = recupererPanier();
+        console.log(panier.length);
 
-        let prixTotal = 0;                              // prix total du panier
-        let quantiteTotale = 0;                         // quantité totale du panier
+        // si le panier est vide :
+        if (panier.length === 0) {
 
-        for (i = 0; i<panier.length; i++) {             // pour chaque élément du panier :
+            const article = document.createElement('article');          // création d'un article
+            const titre = document.createElement('h2');                 // création d'une div
 
-            // calcul de la quantité total
-            quantiteTotale += parseInt(panier[i].quantity);// 'string' en 'number' puis l'ajoute au total
-            document.querySelector("#totalQuantity").innerHTML = quantiteTotale; 
+            document.querySelector("#cart__items").appendChild(article);// 'article' enfant de 'cart__items'
+            article.appendChild(titre);                                 // 'titre' enfant de 'article'
 
-            for (j=0; j<data.length; j++) {             // pour chaque élément de l'api :
-                
-                if (panier[i].id == data[j]._id) {      // si 'id' élément panier égal à 'id' élément api :
+            titre.className = "panierVide";                             // définit la classe 'titre'
+            titre.innerHTML = 'Le panier est vide...';                  
+        }
 
-                    // création des éléments 
-                    const article = document.createElement('article');              // création d'un article
-                    const divImage = document.createElement('div');                 // création d'une div
-                    const image = document.createElement('img');                    // création d'une image
+        // si le panier n'est pas vide :
+        else {
+            let prixTotal = 0;                              // prix total du panier
+            let quantiteTotale = 0;                         // quantité totale du panier
 
-                    const divDescription = document.createElement('div');           // création d'une div
-                    const description = document.createElement('div');              // création d'une div
-                    const nom = document.createElement('h2');                       // création d'un titre
-                    const couleur = document.createElement('p');                    // création d'un paragraphe
-                    const prix = document.createElement('p');                       // création d'un paragraphe
+            for (i = 0; i<panier.length; i++) {             // pour chaque élément du panier :
 
-                    const parametres = document.createElement('div');               // création d'une div
-                    const divQuantite = document.createElement('div');              // création d'une div
-                    const quantite = document.createElement('p');                   // création d'un paragraphe
-                    const inputQuantite = document.createElement('input');          // création d'une div
+                // calcul de la quantité total
+                quantiteTotale += parseInt(panier[i].quantity);// 'string' en 'number' puis l'ajoute au total
+                document.querySelector("#totalQuantity").innerHTML = quantiteTotale; 
 
-                    const divSupprimer = document.createElement('div');             // création d'une div
-                    const supprimer = document.createElement('p');                  // création d'un paragraphe
+                for (j=0; j<data.length; j++) {             // pour chaque élément de l'api :
+                    
+                    if (panier[i].id == data[j]._id) {      // si 'id' élément panier égal à 'id' élément api :
 
-                    // définition de la hiérarchie des éléments
-                    article.appendChild(divImage);               // 'divImage' enfant de 'article'
-                    divImage.appendChild(image);                 // 'image' enfant de 'divImage'
+                        // création des éléments 
+                        const article = document.createElement('article');              // création d'un article
+                        const divImage = document.createElement('div');                 // création d'une div
+                        const image = document.createElement('img');                    // création d'une image
 
-                    article.appendChild(divDescription);         // 'divDescription' enfant de 'article'
-                    divDescription.appendChild(description);     // 'description' enfant de 'divDescription'
-                    description.appendChild(nom);                // 'nom' enfant de 'description'
-                    description.appendChild(couleur);            // 'couleur' enfant de 'description'
-                    description.appendChild(prix);               // 'prix' enfant de 'description'
+                        const divDescription = document.createElement('div');           // création d'une div
+                        const description = document.createElement('div');              // création d'une div
+                        const nom = document.createElement('h2');                       // création d'un titre
+                        const couleur = document.createElement('p');                    // création d'un paragraphe
+                        const prix = document.createElement('p');                       // création d'un paragraphe
 
-                    divDescription.appendChild(parametres);      // 'parametres' enfant de 'divDescription'
-                    parametres.appendChild(divQuantite);         // 'divQuantite' enfant de 'parametres'
-                    divQuantite.appendChild(quantite);           // 'quantite' enfant de 'divQuantite'
-                    divQuantite.appendChild(inputQuantite);      // 'inputQuantite' enfant de 'divQuantite'
+                        const parametres = document.createElement('div');               // création d'une div
+                        const divQuantite = document.createElement('div');              // création d'une div
+                        const quantite = document.createElement('p');                   // création d'un paragraphe
+                        const inputQuantite = document.createElement('input');          // création d'une div
 
-                    parametres.appendChild(divSupprimer);        // 'divSupprimer' enfant de 'parametres'
-                    divSupprimer.appendChild(supprimer);         // 'supprimer' enfant de 'divSupprimer'
+                        const divSupprimer = document.createElement('div');             // création d'une div
+                        const supprimer = document.createElement('p');                  // création d'un paragraphe
 
-                    // ajout de la classe des éléments
-                    article.className = "cart__item";                               // définit 'article'
-                    divImage.className = "cart__item__img";                         // définit 'divImage'
+                        // définition de la hiérarchie des éléments
+                        article.appendChild(divImage);               // 'divImage' enfant de 'article'
+                        divImage.appendChild(image);                 // 'image' enfant de 'divImage'
 
-                    divDescription.className = "cart__item__content";               // définit 'divDescription'
-                    description.className = "cart__item__content__description";     // définit  'description'
-                                    
-                    parametres.className = "cart__item__content__settings";         // définit  'parametres'
-                    divQuantite.className = "cart__item__content__settings__quantity"; // définit  'divQuantite'
-                    inputQuantite.className = "itemQuantity";                       // définit 'inputQuantite'
+                        article.appendChild(divDescription);         // 'divDescription' enfant de 'article'
+                        divDescription.appendChild(description);     // 'description' enfant de 'divDescription'
+                        description.appendChild(nom);                // 'nom' enfant de 'description'
+                        description.appendChild(couleur);            // 'couleur' enfant de 'description'
+                        description.appendChild(prix);               // 'prix' enfant de 'description'
 
-                    divSupprimer.className = "cart__item__content__settings__delete"; // définit  'divSupprimer'
-                    supprimer.className = "deleteItem";                             // définit 'Supprimer'
+                        divDescription.appendChild(parametres);      // 'parametres' enfant de 'divDescription'
+                        parametres.appendChild(divQuantite);         // 'divQuantite' enfant de 'parametres'
+                        divQuantite.appendChild(quantite);           // 'quantite' enfant de 'divQuantite'
+                        divQuantite.appendChild(inputQuantite);      // 'inputQuantite' enfant de 'divQuantite'
 
-                    // ajout des attributs
-                    article.setAttribute('data-id', panier[i].id);                  // 'data-id'
-                    article.setAttribute('data-couleur', panier[i].couleur);        // 'data-couleur' 
+                        parametres.appendChild(divSupprimer);        // 'divSupprimer' enfant de 'parametres'
+                        divSupprimer.appendChild(supprimer);         // 'supprimer' enfant de 'divSupprimer'
 
-                    inputQuantite.setAttribute('type', 'number');                   // 'type'
-                    inputQuantite.setAttribute('name', 'itemQuantity');             // 'name'
-                    inputQuantite.setAttribute('min', '1');                         // 'min'
-                    inputQuantite.setAttribute('max', '100');                       // 'max'
-                    inputQuantite.setAttribute('aria-label', 'quantité');           // 'aria-label'
-                    inputQuantite.setAttribute('value',panier[i].quantity);         // 'value'
+                        // ajout de la classe des éléments
+                        article.className = "cart__item";                               // définit 'article'
+                        divImage.className = "cart__item__img";                         // définit 'divImage'
 
-                    image.src = data[j].imageUrl;                                   // 'src' de l'image
-                    image.alt = data[j].imageUrl;                                   // 'alt' de l'image
+                        divDescription.className = "cart__item__content";               // définit 'divDescription'
+                        description.className = "cart__item__content__description";     // définit  'description'
+                                        
+                        parametres.className = "cart__item__content__settings";         // définit  'parametres'
+                        divQuantite.className = "cart__item__content__settings__quantity"; // définit  'divQuantite'
+                        inputQuantite.className = "itemQuantity";                       // définit 'inputQuantite'
 
-                    // calcul du prix total
-                    prixTotal += parseInt(data[j].price) * parseInt(panier[i].quantity);         
-                    document.querySelector("#totalPrice").innerHTML = prixTotal;
+                        divSupprimer.className = "cart__item__content__settings__delete"; // définit  'divSupprimer'
+                        supprimer.className = "deleteItem";                             // définit 'Supprimer'
 
-                    // ajout inner HTML
-                    couleur.innerHTML = article.getAttribute('data-couleur');       // affiche la couleur
-                    nom.innerHTML = data[j].name;                                   // affiche le nom
-                    prix.innerHTML = parseInt(data[j].price) + ' €';                // affiche le prix
-                    supprimer.innerHTML = 'Supprimer';                              // bouton supprimer
+                        // ajout des attributs
+                        article.setAttribute('data-id', panier[i].id);                  // 'data-id'
+                        article.setAttribute('data-couleur', panier[i].couleur);        // 'data-couleur' 
 
-                    // 'article' enfant de la class 'cart__items' déja existante dans le code html
-                    document.querySelector("#cart__items").appendChild(article);
+                        inputQuantite.setAttribute('type', 'number');                   // 'type'
+                        inputQuantite.setAttribute('name', 'itemQuantity');             // 'name'
+                        inputQuantite.setAttribute('min', '1');                         // 'min'
+                        inputQuantite.setAttribute('max', '100');                       // 'max'
+                        inputQuantite.setAttribute('aria-label', 'quantité');           // 'aria-label'
+                        inputQuantite.setAttribute('value',panier[i].quantity);         // 'value'
+
+                        image.src = data[j].imageUrl;                                   // 'src' de l'image
+                        image.alt = data[j].imageUrl;                                   // 'alt' de l'image
+
+                        // calcul du prix total
+                        prixTotal += parseInt(data[j].price) * parseInt(panier[i].quantity);         
+                        document.querySelector("#totalPrice").innerHTML = prixTotal;
+
+                        // ajout inner HTML
+                        couleur.innerHTML = article.getAttribute('data-couleur');       // affiche la couleur
+                        nom.innerHTML = data[j].name;                                   // affiche le nom
+                        prix.innerHTML = parseInt(data[j].price) + ' €';                // affiche le prix
+                        supprimer.innerHTML = 'Supprimer';                              // bouton supprimer
+
+                        // 'article' enfant de la class 'cart__items' déja existante dans le code html
+                        document.querySelector("#cart__items").appendChild(article);
+                    }
                 }
             }
         }
