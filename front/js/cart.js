@@ -13,22 +13,22 @@ function recupererPanier() {
         return [];          
     }
     else {                          // sinon 
-        return JSON.parse(panier);  // transforme le JSON en java script 
+        return JSON.parse(panier);  // transforme string JSON en objet java script 
     }
 }
 
 //////////////////////// Manipulation du DOM ////////////////////////////////
 
-
 fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET via fetch
     .then(function(result) {
         if (result.ok) {                        // si result ok
-        return result.json();                   // envoie la réponse au format JSON
+            return result.json();               // envoie la réponse au format JSON
         }
     })
 
     // affiche les éléments du panier
     .then(function(data) {
+
         let panier = recupererPanier();
 
         let prixTotal = 0;                              // prix total du panier
@@ -37,7 +37,7 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
         for (i = 0; i<panier.length; i++) {             // pour chaque élément du panier :
 
             // calcul de la quantité total
-            quantiteTotale += panier[i].quantity;       
+            quantiteTotale += parseInt(panier[i].quantity);// 'string' en 'number' puis l'ajoute au total
             document.querySelector("#totalQuantity").innerHTML = quantiteTotale; 
 
             for (j=0; j<data.length; j++) {             // pour chaque élément de l'api :
@@ -110,13 +110,13 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
                     image.alt = data[j].imageUrl;                                   // 'alt' de l'image
 
                     // calcul du prix total
-                    prixTotal += data[j].price * panier[i].quantity;         
+                    prixTotal += parseInt(data[j].price) * parseInt(panier[i].quantity);         
                     document.querySelector("#totalPrice").innerHTML = prixTotal;
 
                     // ajout inner HTML
                     couleur.innerHTML = article.getAttribute('data-couleur');       // affiche la couleur
                     nom.innerHTML = data[j].name;                                   // affiche le nom
-                    prix.innerHTML = data[j].price + ' €';                          // affiche le prix
+                    prix.innerHTML = parseInt(data[j].price) + ' €';                // affiche le prix
                     supprimer.innerHTML = 'Supprimer';                              // bouton supprimer
 
                     // 'article' enfant de la class 'cart__items' déja existante dans le code html
@@ -148,3 +148,69 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
             })
         }
     })
+
+    // Mise à jour de la quantité & du prix en fonction des changements apporté sur la page
+    .then(function(){ 
+
+        // ajout addEventListener sur tout le document
+        document.addEventListener('change', function(event) { 
+
+            // si la classe du déclancheur contient 'itemQuantity' :
+            if(event.target.classList.contains('itemQuantity')) {   
+
+                // si la valeur de l'input est comprise entre 1 et 100 :
+                if(event.target.value >= 1 && event.target.value <= 100) {
+                    
+                    fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET via fetch
+                        .then(function(result) {
+                            if (result.ok) {                        // si result ok
+                                return result.json();               // envoie la réponse au format JSON
+                            }
+                        })
+
+                        // modifie la quantité totale ainsi que le prix
+                        .then(function(data) { 
+
+                            let panier = recupererPanier();                 // récupère le panier
+
+                            let prixTotal = 0;                              // prix total du panier
+                            let quantiteTotale = 0;                         // quantité totale du panier
+
+                            for (i = 0; i<panier.length; i++) {             // pour chaque élément du panier :
+
+                                // calcul de la quantité total
+                                quantiteTotale += parseInt(panier[i].quantity); // 'string' en 'number'
+                                document.querySelector("#totalQuantity").innerHTML = quantiteTotale; 
+
+                                // pour chaque élément de l'api :
+                                for (j=0; j<data.length; j++) {             
+                                    
+                                    // si 'id' élément panier égal à 'id' élément api :
+                                    if (panier[i].id == data[j]._id) {      
+
+                                        // calcul du prix total
+                                        prixTotal += parseInt(data[j].price) * parseInt(panier[i].quantity);         
+                                        document.querySelector("#totalPrice").innerHTML = prixTotal;
+                                    }
+                                }
+                            }
+                        })
+                    
+                    let panier = recupererPanier();
+                    
+                    let produit = panier.find(element => 
+                        element.id == event.target.closest('.cart__item').dataset.id && element.couleur == event.target.closest('.cart__item').dataset.couleur);
+                        
+                    produit.quantity = event.target.value;
+                    localStorage.setItem("panier", JSON.stringify(panier));
+                }
+                else {
+                    window.alert("Champ incorrect! La quantité doit être comprise entre 1 et 100");
+                }
+            }
+        })
+    })
+
+
+
+    
