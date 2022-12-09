@@ -30,19 +30,26 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
     .then(function(data) {
 
         let panier = recupererPanier();
-        console.log(panier.length);
 
         // si le panier est vide :
         if (panier.length === 0) {
 
+            // création des éléments 
             const article = document.createElement('article');          // création d'un article
             const titre = document.createElement('h2');                 // création d'une div
 
+            // définition de la hiérarchie des éléments
             document.querySelector("#cart__items").appendChild(article);// 'article' enfant de 'cart__items'
             article.appendChild(titre);                                 // 'titre' enfant de 'article'
 
             titre.className = "panierVide";                             // définit la classe 'titre'
-            titre.innerHTML = 'Le panier est vide...';                  
+            titre.innerHTML = 'Le panier est vide...';       
+            
+            let prixTotal = 0;                                          // prix total du panier
+            let quantiteTotale = 0;                                     // quantité totale du panier
+
+            document.querySelector("#totalQuantity").innerHTML = quantiteTotale; // affiche la quatité totale
+            document.querySelector("#totalPrice").innerHTML = prixTotal; // affiche le prix total
         }
 
         // si le panier n'est pas vide :
@@ -228,6 +235,78 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
         })
     })
 
+//////////////////////// Gestion du formulaire ////////////////////////////////
+
+// sauvegarde du formulaire dans le localstorage
+function sauvegardeDuFormulaire(formulaireUtilisateur) {
+    localStorage.setItem("formulaireUtilisateur", JSON.stringify(formulaireUtilisateur)); // sauvegarde sur le localStorage 
+} 
+
+// récupération du formulaire dans le localstorage
+function recupereLeFormulaire() {
+    let formulaireUtilisateur = localStorage.getItem("formulaireUtilisateur"); // récupère le contenu du localStorage
+
+    if (formulaireUtilisateur == null) {            // si formulaireUtilisateur  null renvoi []
+        return [];          
+    }
+    else {                                          // sinon 
+        return JSON.parse(formulaireUtilisateur);   // transforme le JSON en java script 
+    }
+}
 
 
+// description de la classe Formulaire
+class Formulaire {
+    constructor(prenomFormulaire, nomFormulaire, adresseFormulaire, villeFormulaire, emailFormulaire) { 
+        this.prenom = prenomFormulaire;    
+        this.nom =  nomFormulaire;
+        this.adresse = adresseFormulaire;
+        this.ville = villeFormulaire;
+        this.email = emailFormulaire;
+    }
+}
+
+// création du formulaire
+function creationDuFormulaire() {
+    let prenomFormulaire = document.getElementById('firstName').value; 
+    let nomFormulaire = document.getElementById('lastName').value;
+    let adresseFormulaire = document.getElementById('address').value;
+    let villeFormulaire = document.getElementById('city').value;
+    let emailFormulaire = document.getElementById('email').value;
+
+    let formulaireUtilisateur = new Formulaire(prenomFormulaire, nomFormulaire, adresseFormulaire, villeFormulaire, emailFormulaire);
+
+    sauvegardeDuFormulaire(formulaireUtilisateur);
+}
+
+// récupère le formulaire lors du click
+document.getElementById('order').addEventListener("click", creationDuFormulaire);
+
+// conserve les données de l'utilisateur dans les champs
+let formulaireUtilisateur = recupereLeFormulaire();
+
+if (formulaireUtilisateur.prenom !== undefined) {
+
+    document.getElementById('firstName').value = formulaireUtilisateur.prenom;
+}    
+if (formulaireUtilisateur.nom !== undefined) {
+
+    document.getElementById('lastName').value = formulaireUtilisateur.nom;
+}
     
+if (formulaireUtilisateur.adresse !== undefined) {
+
+    document.getElementById('address').value = formulaireUtilisateur.adresse;
+}
+    
+if (formulaireUtilisateur.ville !== undefined) {
+    
+    document.getElementById('city').value = formulaireUtilisateur.ville;
+}
+
+if (formulaireUtilisateur.email !== undefined) {
+    
+    document.getElementById('email').value = formulaireUtilisateur.email;
+}
+    
+
