@@ -258,10 +258,10 @@ function recupereLeFormulaire() {
 // description de la classe Formulaire
 class Formulaire {
     constructor(prenomFormulaire, nomFormulaire, adresseFormulaire, villeFormulaire, emailFormulaire) { 
-        this.prenom = prenomFormulaire;    
-        this.nom =  nomFormulaire;
-        this.adresse = adresseFormulaire;
-        this.ville = villeFormulaire;
+        this.firstName = prenomFormulaire;    
+        this.lastName =  nomFormulaire;
+        this.address = adresseFormulaire;
+        this.city = villeFormulaire;
         this.email = emailFormulaire;
     }
 }
@@ -279,34 +279,19 @@ function creationDuFormulaire() {
     sauvegardeDuFormulaire(formulaireUtilisateur);
 }
 
-// récupère le formulaire lors du click
+// crée le formulaire lors du click
 document.getElementById('order').addEventListener("click", creationDuFormulaire);
 
-// conserve les données de l'utilisateur dans les champs
+// récupère le formulaire et le stocke dans 'formulaireUtilisateur'
 let formulaireUtilisateur = recupereLeFormulaire();
 
-if (formulaireUtilisateur.prenom !== undefined) {
-
-    document.getElementById('firstName').value = formulaireUtilisateur.prenom;
-}    
-if (formulaireUtilisateur.nom !== undefined) {
-
-    document.getElementById('lastName').value = formulaireUtilisateur.nom;
-}
-    
-if (formulaireUtilisateur.adresse !== undefined) {
-
-    document.getElementById('address').value = formulaireUtilisateur.adresse;
-}
-    
-if (formulaireUtilisateur.ville !== undefined) {
-    
-    document.getElementById('city').value = formulaireUtilisateur.ville;
+// rempli les champs correspondants avec les données du localStorage
+function remplirChampInputDepuisLocalStorage(input) {
+    document.querySelector(`#${input}`).value = formulaireUtilisateur[input];
 }
 
-if (formulaireUtilisateur.email !== undefined) {
-    
-    document.getElementById('email').value = formulaireUtilisateur.email;
-}
-    
-
+remplirChampInputDepuisLocalStorage("firstName");
+remplirChampInputDepuisLocalStorage("lastName");
+remplirChampInputDepuisLocalStorage("address");
+remplirChampInputDepuisLocalStorage("city");
+remplirChampInputDepuisLocalStorage("email");
