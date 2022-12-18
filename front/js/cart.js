@@ -237,14 +237,100 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
 
 //////////////////////// Gestion du formulaire ////////////////////////////////
 
+// mise en place des RegExp 
+function regExpFormulaire() {
+    // déclaration du formulaire
+    let form = document.querySelector(".cart__order__form");
+
+    // ajout des Regex
+    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[ -a-zA-Zàâäéèêëîïôöûùüç]+)+");
+    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+
+    // validation du prénom
+    function validerPrenom() {
+        let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+
+        if (charRegExp.test(form.firstName.value)) {
+            firstNameErrorMsg.innerHTML = '';
+        }
+        else {
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+        }
+    }
+    // écoute du prenom
+    form.firstName.addEventListener('change', validerPrenom);
+
+    // validation du nom
+    function validerNom() {
+        let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+
+        if (charRegExp.test(form.lastName.value)) {
+            lastNameErrorMsg.innerHTML = '';
+        }
+        else {
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+        }
+    }
+    // écoute du nom
+    form.lastName.addEventListener('change', function() { validerNom(this);})
+
+    // validation de l'adresse
+    function validerAdresse() {
+        let addressErrorMsg = document.getElementById('addressErrorMsg');
+
+        if (addressRegExp.test(form.address.value)) {
+            addressErrorMsg.innerHTML = '';
+        }
+        else {
+            addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+        }
+    }
+    // écoute de l'adresse
+    form.address.addEventListener('change', function() { validerAdresse(this);})
+
+    // validation de la ville
+    function validerVille() {
+        let cityErrorMsg = document.getElementById('cityErrorMsg');
+
+        if (charRegExp.test(form.city.value)) {
+            cityErrorMsg.innerHTML = '';
+        }
+        else {
+            cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+        }
+    }
+    // écoute de la ville
+    form.city.addEventListener('change', function() { validerVille(this);})
+
+    // validation de l'email
+    function validerEmail() {
+        let emailErrorMsg = document.getElementById('emailErrorMsg');
+
+        if (emailRegExp.test(form.email.value)) {
+            emailErrorMsg.innerHTML = '';
+        }
+        else {
+            emailErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+        }
+    }
+    // écoute de l'email 
+    form.email.addEventListener('change', function() { validerEmail(this);})
+}
+
+// vérifie que les champs correspondent aux RegExp
+regExpFormulaire();
+
 // sauvegarde du formulaire dans le localstorage
 function sauvegardeDuFormulaire(formulaireUtilisateur) {
-    localStorage.setItem("formulaireUtilisateur", JSON.stringify(formulaireUtilisateur)); // sauvegarde sur le localStorage 
+    localStorage.setItem("formulaireUtilisateur", JSON.stringify(formulaireUtilisateur)); 
 } 
 
 // récupération du formulaire dans le localstorage
 function recupereLeFormulaire() {
-    let formulaireUtilisateur = localStorage.getItem("formulaireUtilisateur"); // récupère le contenu du localStorage
+
+    // récupère le contenu du localStorage
+    let formulaireUtilisateur = localStorage.getItem("formulaireUtilisateur"); 
 
     if (formulaireUtilisateur == null) {            // si formulaireUtilisateur  null renvoi []
         return [];          
@@ -253,7 +339,6 @@ function recupereLeFormulaire() {
         return JSON.parse(formulaireUtilisateur);   // transforme le JSON en java script 
     }
 }
-
 
 // description de la classe Formulaire
 class Formulaire {
