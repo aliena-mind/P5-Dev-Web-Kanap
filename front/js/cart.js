@@ -237,15 +237,16 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
 
 //////////////////////// Gestion du formulaire ////////////////////////////////
 
-// mise en place des RegExp 
-function regExpFormulaire() {
+// affiche une erreur pour chaque champ mal renseigné
+function validerFormulaire() {
+
     // déclaration du formulaire
     let form = document.querySelector(".cart__order__form");
 
     // ajout des Regex
-    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[ -a-zA-Zàâäéèêëîïôöûùüç]+)+");
-    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+    let charRegExp = new RegExp("^[a-zA-Zàâäéèêëîïìôöòûüùç,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:[ ]{1}[-a-zA-Zàâäéèêëîïìôöòûüùç]+)+$");
+    let emailRegExp = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");
 
     // validation du prénom
     function validerPrenom() {
@@ -255,7 +256,7 @@ function regExpFormulaire() {
             firstNameErrorMsg.innerHTML = '';
         }
         else {
-            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner votre prénom correctement.'
         }
     }
     // écoute du prenom
@@ -269,7 +270,7 @@ function regExpFormulaire() {
             lastNameErrorMsg.innerHTML = '';
         }
         else {
-            lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner votre nom correctement.'
         }
     }
     // écoute du nom
@@ -283,7 +284,7 @@ function regExpFormulaire() {
             addressErrorMsg.innerHTML = '';
         }
         else {
-            addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+            addressErrorMsg.innerHTML = 'Veuillez renseigner votre adresse correctement.'
         }
     }
     // écoute de l'adresse
@@ -297,7 +298,7 @@ function regExpFormulaire() {
             cityErrorMsg.innerHTML = '';
         }
         else {
-            cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+            cityErrorMsg.innerHTML = 'Veuillez renseigner votre ville correctement.'
         }
     }
     // écoute de la ville
@@ -311,32 +312,30 @@ function regExpFormulaire() {
             emailErrorMsg.innerHTML = '';
         }
         else {
-            emailErrorMsg.innerHTML = 'Veuillez renseigner ce champ correctement.'
+            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email correctement.'
         }
     }
     // écoute de l'email 
     form.email.addEventListener('change', function() { validerEmail(this);})
 }
-
-// vérifie que les champs correspondent aux RegExp
-regExpFormulaire();
+validerFormulaire(); // vérifie que les champs correspondent aux RegExp sinon affiche une erreur
 
 // sauvegarde du formulaire dans le localstorage
-function sauvegardeDuFormulaire(formulaireUtilisateur) {
-    localStorage.setItem("formulaireUtilisateur", JSON.stringify(formulaireUtilisateur)); 
+function sauvegardeDuFormulaire(contact) {
+    localStorage.setItem("contact", JSON.stringify(contact)); 
 } 
 
 // récupération du formulaire dans le localstorage
 function recupereLeFormulaire() {
 
     // récupère le contenu du localStorage
-    let formulaireUtilisateur = localStorage.getItem("formulaireUtilisateur"); 
+    let contact = localStorage.getItem("contact"); 
 
-    if (formulaireUtilisateur == null) {            // si formulaireUtilisateur  null renvoi []
+    if (contact == null) {            // si contact  null renvoi []
         return [];          
     }
-    else {                                          // sinon 
-        return JSON.parse(formulaireUtilisateur);   // transforme le JSON en java script 
+    else {                            // sinon 
+        return JSON.parse(contact);   // transforme le JSON en java script 
     }
 }
 
@@ -359,24 +358,59 @@ function creationDuFormulaire() {
     let villeFormulaire = document.getElementById('city').value;
     let emailFormulaire = document.getElementById('email').value;
 
-    let formulaireUtilisateur = new Formulaire(prenomFormulaire, nomFormulaire, adresseFormulaire, villeFormulaire, emailFormulaire);
+    let contact = new Formulaire(prenomFormulaire, nomFormulaire, adresseFormulaire, villeFormulaire, emailFormulaire);
 
-    sauvegardeDuFormulaire(formulaireUtilisateur);
+    sauvegardeDuFormulaire(contact);
 }
 
-// crée le formulaire lors du click
-document.getElementById('order').addEventListener("click", creationDuFormulaire);
+// crée le formulaire si le panier n'est pas vide et que les champs respectent les RegExp puis le post
+function postFormulaire() {
 
-// récupère le formulaire et le stocke dans 'formulaireUtilisateur'
-let formulaireUtilisateur = recupereLeFormulaire();
+    creationDuFormulaire();                 // crée le formulaire commme un objet java script
 
-// rempli les champs correspondants avec les données du localStorage
-function remplirChampInputDepuisLocalStorage(input) {
-    document.querySelector(`#${input}`).value = formulaireUtilisateur[input];
+    let contact = recupereLeFormulaire();   // récupère le formulaire
+    let panier = recupererPanier();         // récupère le panier
+    
+    let products = panier.map(p => p.id);   // récupère les id des produits du panier
+    
+    const order = {                         // définit la constante 'order'
+        contact,
+        products
+    }
+
+    // déclaration du formulaire
+    let form = document.querySelector(".cart__order__form");
+
+    // ajout des Regex
+    let charRegExp = new RegExp("^[a-zA-Zàâäéèêëîïìôöòûüùç,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:[ ]{1}[-a-zA-Zàâäéèêëîïìôöòûüùç]+)+$");
+    let emailRegExp = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");
+
+    // si le panier n'est pas vide
+    if (panier.length > 0) {
+
+        // si les champs du formulaire correspondent aux RegExp
+        if (charRegExp.test(form.firstName.value) && charRegExp.test(form.lastName.value) && addressRegExp.test(form.address.value) && charRegExp.test(form.city.value) && emailRegExp.test(form.email.value)) {
+            
+            // lien vers API, requete POST via fetch
+            fetch("http://localhost:3000/api/products/order", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(order)
+                })
+                .then((reponse) => reponse.json())
+                .then(data => window.location.href = "confirmation.html?orderId=" + data.orderId)
+                .then(localStorage.clear())
+        }   
+    } 
+    else {
+        window.alert("Votre panier est vide.");
+    }          
 }
+document.getElementById('order').addEventListener('click', postFormulaire); 
 
-remplirChampInputDepuisLocalStorage("firstName");
-remplirChampInputDepuisLocalStorage("lastName");
-remplirChampInputDepuisLocalStorage("address");
-remplirChampInputDepuisLocalStorage("city");
-remplirChampInputDepuisLocalStorage("email");
+
+
