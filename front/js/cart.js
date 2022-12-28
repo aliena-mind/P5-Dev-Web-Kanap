@@ -141,6 +141,7 @@ fetch('http://localhost:3000/api/products/')    // lien vers API, requete GET vi
                         nom.innerHTML = data[j].name;                                   // affiche le nom
                         prix.innerHTML = parseInt(data[j].price) + ' €';                // affiche le prix
                         supprimer.innerHTML = 'Supprimer';                              // bouton supprimer
+                        quantite.innerHTML = "Qté : ";                                  
 
                         // 'article' enfant de la class 'cart__items' déja existante dans le code html
                         document.querySelector("#cart__items").appendChild(article);

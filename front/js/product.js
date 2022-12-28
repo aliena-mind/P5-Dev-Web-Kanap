@@ -75,14 +75,20 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
         let nombreDeProduitText = document.querySelector('input').value; // nombreDeProduitText (type: string)
         let nombreDeProduit = parseInt(nombreDeProduitText); // nombreDeProduit (type: nombre)
 
-        if ((produitExistant) != undefined) {               // si produitExistant est défini :
-            produitExistant.quantity += nombreDeProduit;    // ajouter 'nombreDeProduit' à la quantité
+        if (nombreDeProduit<=100) {
+            if ((produitExistant) !== undefined) {              // si produitExistant est défini :
+                produitExistant.quantity += nombreDeProduit;    // ajouter 'nombreDeProduit' à la quantité
+                sauvegarderPanier(panier);                          // sauvegarde du panier
+            }
+            else {                                              // sinon :
+                produit.quantity = nombreDeProduit;             // défini la quantité égale au 'nombreDeProduit'
+                panier.push(produit);                           // ajouter le produit au panier
+                sauvegarderPanier(panier);                      // sauvegarde du panier
+            }
         }
-        else {                                              // sinon :
-            produit.quantity = nombreDeProduit;             // défini la quantité égale au 'nombreDeProduit'
-            panier.push(produit);                           // ajouter le produit au panier
+        else {
+            window.alert("La quantité doit être comprise entre 0 et 100");
         }
-        sauvegarderPanier(panier);                          // sauvegarde du panier
     }
 
     
@@ -114,7 +120,10 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
         else {  // sinon crée un nouvel objet 'produit' et l'ajoute au panier
             let produit = new Produit(idProduit, couleurProduit, nombreDeProduit);
             ajouterAuPanier(produit);
-            alert('Le produit à été ajouté au panier');
+            if (nombreDeProduit<=100) {
+                alert('Le produit à été ajouté au panier');
+            }
+            
         }
     }
     
