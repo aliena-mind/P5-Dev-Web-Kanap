@@ -118,12 +118,16 @@ fetch('http://localhost:3000/api/products/' + idProduit)            // lien vers
             alert('Veuillez choisir une quantité')  // Affiche une alerte
         }
         else {  // sinon crée un nouvel objet 'produit' et l'ajoute au panier
-            let produit = new Produit(idProduit, couleurProduit, nombreDeProduit);
-            ajouterAuPanier(produit);
-            if (nombreDeProduit<=100) {
+            
+            
+            if (nombreDeProduit>=1 && nombreDeProduit<=100) {
+                let produit = new Produit(idProduit, couleurProduit, nombreDeProduit);
+                ajouterAuPanier(produit);
                 alert('Le produit à été ajouté au panier');
             }
-            
+            else {
+                alert('La quantité doit être comprise entre 1 et 100')
+            }
         }
     }
     
